@@ -88,7 +88,6 @@ while (( attempt < MAX_ATTEMPTS )); do
   (( attempt++ ))
   PUBLICIP=$(dig +short myip.opendns.com @resolver1.opendns.com)
   if is_valid_output "$PUBLICIP"; then
-    echo "Valid public IP found after $attempt attempts: $PUBLICIP"
     break
   fi
   sleep 5

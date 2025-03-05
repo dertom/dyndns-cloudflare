@@ -76,7 +76,29 @@ f_logging "DNSID=$DNSID"
 f_logging "before getting PUBLICIP"
 f_logging "PUBLICIP=$PUBLICIP"
 f_logging "LASTPUBLICIP=$LASTPUBLICIP"
-PUBLICIP=$(dig +short myip.opendns.com @resolver1.opendns.com)
+
+is_valid_output() {
+  local output="$1"
+  [[ $output =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]] # Checks for a valid IPv4 address
+}
+
+MAX_ATTEMPTS=3
+attempt=0
+while (( attempt < MAX_ATTEMPTS )); do
+  (( attempt++ ))
+  PUBLICIP=$(dig +short myip.opendns.com @resolver1.opendns.com)
+  if is_valid_output "$PUBLICIP"; then
+    echo "Valid public IP found after $attempt attempts: $PUBLICIP"
+    break
+  fi
+  sleep 5
+done
+
+if ! is_valid_output "$PUBLICIP"; then
+    echo "No valid public IP found after $MAX_ATTEMPTS attempts."
+    exit 1
+fi
+
 if [[ -z $LASTPUBLICIP ]]; then
   echo "LASTPUBLICIP=$PUBLICIP" >> $CONFIGFILE
   f_logging "updating $CONFIGFILE with LASTPUBLICIP=$PUBLICIP"

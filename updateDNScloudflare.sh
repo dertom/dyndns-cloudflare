@@ -90,7 +90,7 @@ while (( attempt < MAX_ATTEMPTS )); do
   if is_valid_output "$PUBLICIP"; then
     break
   fi
-  sleep 5
+  sleep 15
 done
 
 if ! is_valid_output "$PUBLICIP"; then

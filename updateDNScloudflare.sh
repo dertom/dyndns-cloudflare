@@ -117,3 +117,5 @@ if [[ $LASTPUBLICIP != $PUBLICIP ]]; then
 fi
 
 f_mail
+
+# EOF
